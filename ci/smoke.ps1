@@ -53,8 +53,7 @@ Shot 'main'
 Click 760 156
 [System.Windows.Forms.SendKeys]::SendWait('Total{ENTER}')
 Start-Sleep -Seconds 3
-Click 120 202
-[System.Windows.Forms.SendKeys]::SendWait('{DOWN 5}')
+Click 130 234
 Start-Sleep -Seconds 3
 Shot 'measure'
 Click 700 330
