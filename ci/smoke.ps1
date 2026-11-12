@@ -22,6 +22,7 @@ function Click($x, $y) {
     [Win.Mouse]::SetCursorPos($x, $y) | Out-Null
     Start-Sleep -Milliseconds 200
     [Win.Mouse]::mouse_event(2, 0, 0, 0, [System.UIntPtr]::Zero)
+    Start-Sleep -Milliseconds 120
     [Win.Mouse]::mouse_event(4, 0, 0, 0, [System.UIntPtr]::Zero)
     Start-Sleep -Milliseconds 500
 }
@@ -54,6 +55,8 @@ Click 760 156
 [System.Windows.Forms.SendKeys]::SendWait('Total{ENTER}')
 Start-Sleep -Seconds 3
 Click 130 234
+Start-Sleep -Seconds 1
+Click 130 250
 Start-Sleep -Seconds 3
 Shot 'measure'
 Click 700 330
