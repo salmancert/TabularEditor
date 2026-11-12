@@ -128,6 +128,10 @@
       <HintPath>..\packages\Microsoft.AnalysisServices.19.117.0\lib\net472\Microsoft.AnalysisServices.Tabular.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.AnalysisServices.AdomdClient">
+      <HintPath>..\packages\Microsoft.AnalysisServices.AdomdClient.19.117.0\lib\net472\Microsoft.AnalysisServices.AdomdClient.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Identity.Client, Version=4.83.3.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae">
       <HintPath>..\packages\Microsoft.Identity.Client.4.83.3\lib\net472\Microsoft.Identity.Client.dll</HintPath>
       <Private>True</Private>
@@ -276,6 +280,30 @@
     </Compile>
     <Compile Include="UIServices\ClipboardListener.cs" />
     <Compile Include="UIServices\ThemeManager.cs" />
+    <Compile Include="Modern\DaxAutocomplete.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Modern\DaxFunctionNames.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Modern\AdomdHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Modern\DaxQueryForm.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Modern\VertiPaqForm.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Modern\TableAnalyzerForm.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Modern\DiagramForm.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Modern\ModernFeatures.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="UIServices\Crypto.cs" />
     <Compile Include="UIServices\DeploymentMetadata.cs" />
     <Compile Include="UIServices\DynamicLinq.cs" />

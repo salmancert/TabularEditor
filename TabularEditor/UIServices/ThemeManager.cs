@@ -61,6 +61,12 @@ namespace TabularEditor.UIServices
         private static void Enable()
         {
             IsDark = true;
+            // Syntax colours that stay readable on a dark background.
+            TabularEditor.TextServices.ExpressionParser.PlainStyle = new TextStyle(new SolidBrush(Text), null, FontStyle.Regular);
+            TabularEditor.TextServices.ExpressionParser.KeywordStyle = new TextStyle(new SolidBrush(Color.FromArgb(86, 156, 214)), null, FontStyle.Regular);
+            TabularEditor.TextServices.ExpressionParser.CommentStyle = new TextStyle(new SolidBrush(Color.FromArgb(106, 153, 85)), null, FontStyle.Regular);
+            TabularEditor.TextServices.ExpressionParser.LiteralStyle = new TextStyle(new SolidBrush(Color.FromArgb(206, 145, 120)), null, FontStyle.Regular);
+            TabularEditor.TextServices.ExpressionParser.ParensStyle = new TextStyle(new SolidBrush(Color.FromArgb(180, 180, 180)), null, FontStyle.Regular);
             themedForms.Clear();
             ThemeOpenForms();
             if (!hooked)

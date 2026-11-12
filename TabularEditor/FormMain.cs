@@ -316,6 +316,7 @@ Selected.Hierarchies.ForEach(item => item.TranslatedDisplayFolders.SetAll(item.D
             PopulateRecentFilesList();
 
             ThemeManager.Initialize(viewToolStripMenuItem);
+            TabularEditor.Modern.ModernFeatures.Initialize(this, toolsToolStripMenuItem, txtExpression);
         }
 
         public void PopulateRecentFilesList()

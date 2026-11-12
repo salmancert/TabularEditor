@@ -15,7 +15,9 @@ jobs:
       - uses: NuGet/setup-nuget@v2
 
       - name: Restore packages
-        run: nuget restore TabularEditor.sln
+        run: |
+          nuget restore TabularEditor.sln
+          Get-ChildItem packages\Microsoft.AnalysisServices.AdomdClient* -Recurse -Filter *.dll | Select-Object -ExpandProperty FullName
 
       - name: Generate DAX lexer
         run: msbuild AntlrGrammars\AntlrGrammars.csproj /p:Configuration=Debug /p:Platform=AnyCPU /v:minimal
