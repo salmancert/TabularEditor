@@ -60,7 +60,9 @@ Click 82 284
 [System.Windows.Forms.SendKeys]::SendWait('{RIGHT}{DOWN}{RIGHT}')
 Start-Sleep -Seconds 2
 Shot 'tree'
-[System.Windows.Forms.SendKeys]::SendWait('{DOWN 3}')
+Click 47 506
+Start-Sleep -Seconds 1
+Click 150 650
 Start-Sleep -Seconds 2
 Shot 'measure'
 Click 700 330
