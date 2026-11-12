@@ -63,11 +63,7 @@ namespace TabularEditor.Modern
 
         private class FunctionItem : AutocompleteItem
         {
-            public FunctionItem(string name) : base(name)
-            {
-                ToolTipTitle = name;
-                ToolTipText = "DAX function or keyword. Press F12 on the name to open its documentation.";
-            }
+            public FunctionItem(string name) : base(name) { }
 
             public override CompareResult Compare(string fragmentText)
             {

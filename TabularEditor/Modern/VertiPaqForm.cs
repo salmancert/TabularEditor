@@ -78,6 +78,7 @@ namespace TabularEditor.Modern
 
         private async void LoadData()
         {
+            if (!AdomdHelper.EnsureConnected(this)) { status.Text = "Not connected."; return; }
             status.Text = "Reading storage statistics...";
             try
             {

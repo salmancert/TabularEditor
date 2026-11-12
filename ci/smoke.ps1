@@ -74,6 +74,18 @@ Start-Sleep -Seconds 1
 [System.Windows.Forms.SendKeys]::SendWait('^+d')
 Start-Sleep -Seconds 5
 Shot 'diagram'
+[System.Windows.Forms.SendKeys]::SendWait('%{F4}')
+Start-Sleep -Seconds 1
+[System.Windows.Forms.SendKeys]::SendWait('^+b')
+Start-Sleep -Seconds 4
+Shot 'analyzer'
+[System.Windows.Forms.SendKeys]::SendWait('%{F4}')
+Start-Sleep -Seconds 1
+[System.Windows.Forms.SendKeys]::SendWait('^+q')
+Start-Sleep -Seconds 4
+[System.Windows.Forms.SendKeys]::SendWait('SUMMARIZECOLUMNS{(} Cust')
+Start-Sleep -Seconds 3
+Shot 'query'
 if ($proc.HasExited) { throw "TabularEditor.exe crashed after opening the diagram" }
 Stop-Process -Id $proc.Id -Force
 Write-Host 'Smoke test finished'

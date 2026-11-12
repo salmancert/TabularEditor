@@ -20,7 +20,7 @@ namespace TabularEditor.Modern
             toolsMenu.DropDownItems.Add(new ToolStripSeparator());
             Add(toolsMenu, "New DAX query", Keys.Control | Keys.Shift | Keys.Q, () =>
             {
-                if (AdomdHelper.EnsureConnected(owner)) new DaxQueryForm().Show(owner);
+                new DaxQueryForm().Show(owner);
             });
             Add(toolsMenu, "Preview data of selected table", Keys.Control | Keys.Shift | Keys.P, () =>
             {
@@ -32,7 +32,7 @@ namespace TabularEditor.Modern
             Add(toolsMenu, "Table analyzer (blank columns)", Keys.Control | Keys.Shift | Keys.B, () =>
             {
                 if (!HasModel(owner)) return;
-                if (AdomdHelper.EnsureConnected(owner)) new TableAnalyzerForm(SelectedTable()).Show(owner);
+                new TableAnalyzerForm(SelectedTable()).Show(owner);
             });
             Add(toolsMenu, "VertiPaq analyzer", Keys.None, () =>
             {
