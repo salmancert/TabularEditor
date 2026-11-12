@@ -1,0 +1,32 @@
+name: Build Windows executable
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: microsoft/setup-msbuild@v2
+
+      - uses: NuGet/setup-nuget@v2
+
+      - name: Restore packages
+        run: nuget restore TabularEditor.sln
+
+      - name: Build
+        run: msbuild TabularEditor\TabularEditor.csproj /p:Configuration=Release /p:Platform=AnyCPU /m /v:minimal
+
+      - name: Collect portable build
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force portable | Out-Null
+          Copy-Item TabularEditor\bin\Release\* portable -Recurse -Exclude *.pdb,*.xml
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TabularEditor-portable
+          path: portable

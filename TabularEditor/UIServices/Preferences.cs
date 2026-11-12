@@ -104,6 +104,7 @@ namespace TabularEditor.UIServices
         public bool View_Partitions = true;
         public bool View_Calendars = true;
         public bool View_MetadataInformation = false;
+        public bool View_DarkTheme = false;
 
         [JsonConverter(typeof(StringEnumConverter))]
         public SearchResultOption View_SearchResults = SearchResultOption.ByChild;

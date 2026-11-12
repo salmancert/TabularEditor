@@ -314,6 +314,8 @@ Selected.Hierarchies.ForEach(item => item.TranslatedDisplayFolders.SetAll(item.D
 
             // Populate list of recent files...
             PopulateRecentFilesList();
+
+            ThemeManager.Initialize(viewToolStripMenuItem);
         }
 
         public void PopulateRecentFilesList()

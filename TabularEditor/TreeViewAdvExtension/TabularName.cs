@@ -58,8 +58,8 @@ namespace TabularEditor.UI.Tree
                         (toneDown ? Color.FromArgb(161,161,211) : Color.FromArgb(211, 211, 255)) :
                         (toneDown ? Color.Silver : SystemColors.HighlightText)) :
                     (toneBlue ? 
-                        (toneDown ? Color.FromArgb(111,111,191) : Color.FromArgb(0,0,161)) : 
-                        (toneDown ? Color.Gray : SystemColors.ControlText));
+                        (toneDown ? TabularEditor.UIServices.ThemeManager.TranslatedDimTextColor : TabularEditor.UIServices.ThemeManager.TranslatedTextColor) : 
+                        (toneDown ? TabularEditor.UIServices.ThemeManager.DimTextColor : TabularEditor.UIServices.ThemeManager.TextColor));
         }
 
         private readonly Font BoldFont = new Font(SystemFonts.DefaultFont, FontStyle.Bold);

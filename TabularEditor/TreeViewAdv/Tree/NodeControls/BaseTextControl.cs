@@ -232,7 +232,7 @@ namespace Aga.Controls.Tree.NodeControls
 		{
             fullRowDraw = false;
             skipDraw = false;
-			textColor = SystemColors.ControlText;
+			textColor = TabularEditor.UIServices.ThemeManager.TextColor;
 			backgroundBrush = null;
 			font = context.Font;
 			if (context.DrawSelection == DrawSelectionMode.Active)
@@ -242,8 +242,8 @@ namespace Aga.Controls.Tree.NodeControls
 			}
 			else if (context.DrawSelection == DrawSelectionMode.Inactive)
 			{
-				textColor = SystemColors.ControlText;
-                backgroundBrush = SystemBrushes.InactiveBorder;
+				textColor = TabularEditor.UIServices.ThemeManager.TextColor;
+                backgroundBrush = TabularEditor.UIServices.ThemeManager.IsDark ? TabularEditor.UIServices.ThemeManager.InactiveSelectionBrush : SystemBrushes.InactiveBorder;
 			}
 			else if (context.DrawSelection == DrawSelectionMode.FullRowSelect)
 				textColor = SystemColors.HighlightText;

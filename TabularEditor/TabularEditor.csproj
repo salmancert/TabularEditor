@@ -275,6 +275,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UIServices\ClipboardListener.cs" />
+    <Compile Include="UIServices\ThemeManager.cs" />
     <Compile Include="UIServices\Crypto.cs" />
     <Compile Include="UIServices\DeploymentMetadata.cs" />
     <Compile Include="UIServices\DynamicLinq.cs" />
