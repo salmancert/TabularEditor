@@ -190,6 +190,9 @@ namespace TabularEditor.UIServices
                 case DataGridView grid:
                     ApplyGrid(grid);
                     break;
+                case ThemedTabControl themedTabs:
+                    themedTabs.UseDarkPainting();
+                    break;
                 case TabControl tabs:
                     // Flat, owner-drawn tabs: the native tab frame cannot be recoloured.
                     tabs.Appearance = TabAppearance.FlatButtons;
@@ -359,6 +362,36 @@ namespace TabularEditor.UIServices
             public override Color OverflowButtonGradientBegin => Surface;
             public override Color OverflowButtonGradientMiddle => Surface;
             public override Color OverflowButtonGradientEnd => Surface;
+        }
+    }
+
+    /// <summary>
+    /// A TabControl that paints its own frame and tab headers when the dark theme is active.
+    /// With the light theme it behaves exactly like the standard control.
+    /// </summary>
+    public class ThemedTabControl : TabControl
+    {
+        private bool dark;
+
+        public void UseDarkPainting()
+        {
+            dark = true;
+            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+            Invalidate();
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            if (!dark) { base.OnPaint(e); return; }
+            e.Graphics.Clear(ThemeManager.Surface);
+            for (int i = 0; i < TabCount; i++)
+            {
+                var bounds = GetTabRect(i);
+                bool selected = SelectedIndex == i;
+                using (var brush = new SolidBrush(selected ? ThemeManager.Accent : ThemeManager.BackAlt)) e.Graphics.FillRectangle(brush, bounds);
+                TextRenderer.DrawText(e.Graphics, TabPages[i].Text, Font, bounds, selected ? Color.White : ThemeManager.Text,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+            }
         }
     }
 }

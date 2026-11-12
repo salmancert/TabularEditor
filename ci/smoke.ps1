@@ -38,7 +38,9 @@ $shell = New-Object -ComObject WScript.Shell
 $null = $shell.AppActivate($proc.Id)
 Start-Sleep -Seconds 2
 Shot 'main'
-[System.Windows.Forms.SendKeys]::SendWait('%v')
+[System.Windows.Forms.SendKeys]::SendWait('%')
+Start-Sleep -Milliseconds 500
+[System.Windows.Forms.SendKeys]::SendWait('v')
 Start-Sleep -Milliseconds 800
 Shot 'viewmenu'
 [System.Windows.Forms.SendKeys]::SendWait('e')

@@ -184,7 +184,7 @@ namespace TabularEditor
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.tabCodeEditors = new System.Windows.Forms.TabControl();
+            this.tabCodeEditors = new TabularEditor.UIServices.ThemedTabControl();
             this.pgExpressionEditor = new System.Windows.Forms.TabPage();
             this.txtExpression = new TabularEditor.UI.Extensions.FCTB.FastColoredTextBox();
             this.lblCurrentMeasure = new System.Windows.Forms.Label();
