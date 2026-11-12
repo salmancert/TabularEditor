@@ -117,6 +117,7 @@ namespace TabularEditor.UIServices
                     fctb.SelectionColor = Color.FromArgb(90, 51, 153, 255);
                     fctb.CaretColor = Text;
                     fctb.FoldingIndicatorColor = TextDim;
+                    fctb.DisabledColor = Color.FromArgb(90, 60, 60, 60);
                     break;
                 case PropertyGrid pg:
                     pg.BackColor = Surface;
@@ -134,6 +135,15 @@ namespace TabularEditor.UIServices
                     pg.DisabledItemForeColor = TextDim;
                     pg.SelectedItemWithFocusBackColor = Selection;
                     pg.SelectedItemWithFocusForeColor = Color.White;
+                    foreach (Control inner in pg.Controls)
+                    {
+                        if (inner is ToolStrip strip)
+                        {
+                            strip.Renderer = DarkRenderer.Instance;
+                            strip.BackColor = Surface;
+                            ThemeItems(strip.Items);
+                        }
+                    }
                     break;
                 case ToolStrip ts:
                     ts.Renderer = DarkRenderer.Instance;
@@ -180,10 +190,19 @@ namespace TabularEditor.UIServices
                 case DataGridView grid:
                     ApplyGrid(grid);
                     break;
+                case TabControl tabs:
+                    // Flat, owner-drawn tabs: the native tab frame cannot be recoloured.
+                    tabs.Appearance = TabAppearance.FlatButtons;
+                    tabs.DrawMode = TabDrawMode.OwnerDrawFixed;
+                    tabs.BackColor = Surface;
+                    tabs.DrawItem -= DrawTab;
+                    tabs.DrawItem += DrawTab;
+                    break;
                 case Aga.Controls.Tree.TreeViewAdv tva:
                     tva.BackColor = Back;
                     tva.ForeColor = Text;
                     tva.LineColor = Border;
+                    tva.BorderStyle = BorderStyle.None;
                     break;
                 default:
                     c.BackColor = Surface;
@@ -196,6 +215,17 @@ namespace TabularEditor.UIServices
             // Composite controls manage their own children.
             if (c is PropertyGrid || c is FastColoredTextBox || c is ToolStrip || c is DataGridView) return;
             foreach (Control child in c.Controls) ApplyRecursive(child);
+        }
+
+        private static void DrawTab(object sender, DrawItemEventArgs e)
+        {
+            var tabs = (TabControl)sender;
+            if (e.Index < 0 || e.Index >= tabs.TabPages.Count) return;
+            bool selected = tabs.SelectedIndex == e.Index;
+            var bounds = tabs.GetTabRect(e.Index);
+            using (var brush = new SolidBrush(selected ? Accent : Surface)) e.Graphics.FillRectangle(brush, bounds);
+            TextRenderer.DrawText(e.Graphics, tabs.TabPages[e.Index].Text, tabs.Font, bounds, selected ? Color.White : Text,
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
         }
 
         public static void ApplyGrid(DataGridView grid)

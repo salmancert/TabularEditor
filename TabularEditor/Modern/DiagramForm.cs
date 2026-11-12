@@ -132,21 +132,40 @@ namespace TabularEditor.Modern
                 Invalidate();
             }
 
-            /// <summary>Simple layout: most-connected tables first, placed left to right in rows.</summary>
+            /// <summary>
+            /// Star-schema layout: fact tables (many-side only) in the middle band, the tables they
+            /// look up split above and below, and unrelated tables at the bottom.
+            /// </summary>
             private void Arrange()
             {
-                var degree = nodes.ToDictionary(n => n, n => edges.Count(e => e.From == n || e.To == n));
-                var ordered = nodes.OrderByDescending(n => degree[n]).ThenBy(n => n.Name).ToList();
-                int perRow = Math.Max(1, (int)Math.Ceiling(Math.Sqrt(ordered.Count)));
-                float x = 0, y = 0, rowHeight = 0;
-                for (int i = 0; i < ordered.Count; i++)
+                var facts = nodes.Where(n => edges.Any(e => e.From == n) && !edges.Any(e => e.To == n)).OrderBy(n => n.Name).ToList();
+                var unrelated = nodes.Where(n => !edges.Any(e => e.From == n || e.To == n)).OrderBy(n => n.Name).ToList();
+                var lookups = nodes.Except(facts).Except(unrelated)
+                    .OrderByDescending(n => edges.Count(e => e.From == n || e.To == n)).ThenBy(n => n.Name).ToList();
+                var top = lookups.Where((n, i) => i % 2 == 0).ToList();
+                var bottom = lookups.Where((n, i) => i % 2 == 1).ToList();
+
+                int perRow = Math.Max(3, new[] { top.Count, bottom.Count, facts.Count }.Max());
+                perRow = Math.Min(perRow, Math.Max(3, (int)Math.Ceiling(Math.Sqrt(nodes.Count) * 1.6)));
+                float width = perRow * (NodeWidth + Gap) - Gap;
+                float y = 0;
+                foreach (var band in new[] { top, facts, bottom, unrelated })
                 {
-                    var node = ordered[i];
-                    float height = HeaderHeight + node.Lines.Count * LineHeight + 8;
-                    node.Bounds = new RectangleF(x, y, NodeWidth, height);
-                    rowHeight = Math.Max(rowHeight, height);
-                    x += NodeWidth + Gap;
-                    if ((i + 1) % perRow == 0) { x = 0; y += rowHeight + Gap; rowHeight = 0; }
+                    for (int start = 0; start < band.Count; start += perRow)
+                    {
+                        var row = band.Skip(start).Take(perRow).ToList();
+                        float rowWidth = row.Count * (NodeWidth + Gap) - Gap;
+                        float x = (width - rowWidth) / 2;   // centre each row
+                        float rowHeight = 0;
+                        foreach (var node in row)
+                        {
+                            float height = HeaderHeight + node.Lines.Count * LineHeight + 8;
+                            node.Bounds = new RectangleF(x, y, NodeWidth, height);
+                            rowHeight = Math.Max(rowHeight, height);
+                            x += NodeWidth + Gap;
+                        }
+                        y += rowHeight + Gap * 1.6f;
+                    }
                 }
             }
 
@@ -260,14 +279,11 @@ namespace TabularEditor.Modern
                 {
                     foreach (var edge in edges)
                     {
-                        PointF a, b;
-                        Anchors(edge.From.Bounds, edge.To.Bounds, out a, out b);
-                        float bend = Math.Max(30, Math.Abs(b.X - a.X) / 2);
-                        float da = a.X <= edge.From.Bounds.Left + 1 ? -bend : bend;
-                        float db = b.X <= edge.To.Bounds.Left + 1 ? -bend : bend;
-                        g.DrawBezier(edge.Active ? linePen : inactivePen, a, new PointF(a.X + da, a.Y), new PointF(b.X + db, b.Y), b);
-                        g.DrawString(edge.FromLabel, bold, lineBrush, a.X + (da < 0 ? -14 : 4), a.Y - 17);
-                        g.DrawString(edge.ToLabel, bold, lineBrush, b.X + (db < 0 ? -14 : 4), b.Y - 17);
+                        PointF a, b, c1, c2;
+                        Route(edge.From.Bounds, edge.To.Bounds, out a, out c1, out c2, out b);
+                        g.DrawBezier(edge.Active ? linePen : inactivePen, a, c1, c2, b);
+                        g.DrawString(edge.FromLabel, bold, lineBrush, a.X + Math.Sign(c1.X - a.X) * 10 - 5 + (c1.X == a.X ? 8 : 0), a.Y + Math.Sign(c1.Y - a.Y) * 10 - 8);
+                        g.DrawString(edge.ToLabel, bold, lineBrush, b.X + Math.Sign(c2.X - b.X) * 10 - 5 + (c2.X == b.X ? 8 : 0), b.Y + Math.Sign(c2.Y - b.Y) * 10 - 8);
                     }
 
                     foreach (var node in nodes)
@@ -289,13 +305,35 @@ namespace TabularEditor.Modern
                 }
             }
 
-            /// <summary>Picks the left or right edge of each box, whichever pair is closest.</summary>
-            private static void Anchors(RectangleF from, RectangleF to, out PointF a, out PointF b)
+            private static float Clamp(float value, float min, float max) => Math.Max(min, Math.Min(max, value));
+
+            /// <summary>
+            /// Connects two boxes through the gap between them: bottom-to-top when one is above the
+            /// other, otherwise side to side. Returns the end points and the two bezier control points.
+            /// </summary>
+            private static void Route(RectangleF from, RectangleF to, out PointF a, out PointF c1, out PointF c2, out PointF b)
             {
-                float fy = from.Y + HeaderHeight / 2, ty = to.Y + HeaderHeight / 2;
-                if (from.Right < to.Left) { a = new PointF(from.Right, fy); b = new PointF(to.Left, ty); }
-                else if (to.Right < from.Left) { a = new PointF(from.Left, fy); b = new PointF(to.Right, ty); }
-                else { a = new PointF(from.Right, fy); b = new PointF(to.Right, ty); }
+                float fromX = from.X + from.Width / 2, toX = to.X + to.Width / 2;
+                if (from.Bottom < to.Top || to.Bottom < from.Top)
+                {
+                    bool down = from.Bottom < to.Top;
+                    a = new PointF(Clamp(toX, from.Left + 20, from.Right - 20), down ? from.Bottom : from.Top);
+                    b = new PointF(Clamp(fromX, to.Left + 20, to.Right - 20), down ? to.Top : to.Bottom);
+                    float bend = Math.Max(25, Math.Abs(b.Y - a.Y) / 2);
+                    c1 = new PointF(a.X, a.Y + (down ? bend : -bend));
+                    c2 = new PointF(b.X, b.Y + (down ? -bend : bend));
+                }
+                else
+                {
+                    bool right = from.Right <= to.Left;
+                    bool left = to.Right <= from.Left;
+                    float fy = from.Y + HeaderHeight / 2, ty = to.Y + HeaderHeight / 2;
+                    a = new PointF(left ? from.Left : from.Right, fy);
+                    b = new PointF(right ? to.Left : to.Right, ty);
+                    float bend = Math.Max(25, Math.Abs(b.X - a.X) / 2);
+                    c1 = new PointF(a.X + (left ? -bend : bend), a.Y);
+                    c2 = new PointF(b.X + (right ? -bend : bend), b.Y);
+                }
             }
         }
     }

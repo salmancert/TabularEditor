@@ -38,6 +38,14 @@ $shell = New-Object -ComObject WScript.Shell
 $null = $shell.AppActivate($proc.Id)
 Start-Sleep -Seconds 2
 Shot 'main'
+[System.Windows.Forms.SendKeys]::SendWait('%v')
+Start-Sleep -Milliseconds 800
+Shot 'viewmenu'
+[System.Windows.Forms.SendKeys]::SendWait('e')
+Start-Sleep -Seconds 2
+[System.Windows.Forms.SendKeys]::SendWait('{DOWN 9}')
+Start-Sleep -Seconds 3
+Shot 'expanded'
 [System.Windows.Forms.SendKeys]::SendWait('^+d')
 Start-Sleep -Seconds 5
 Shot 'diagram'
