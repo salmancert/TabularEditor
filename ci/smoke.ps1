@@ -14,6 +14,18 @@ $prefDir = Join-Path $env:LOCALAPPDATA 'TabularEditor'
 New-Item -ItemType Directory -Force $prefDir | Out-Null
 '{"View_DarkTheme":true,"CheckForUpdates":false,"CollectTelemetry":false}' | Set-Content (Join-Path $prefDir 'Preferences.json')
 
+Add-Type -Namespace Win -Name Mouse -MemberDefinition @"
+[DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
+[DllImport("user32.dll")] public static extern void mouse_event(uint flags, uint dx, uint dy, uint data, System.UIntPtr extra);
+"@
+function Click($x, $y) {
+    [Win.Mouse]::SetCursorPos($x, $y) | Out-Null
+    Start-Sleep -Milliseconds 200
+    [Win.Mouse]::mouse_event(2, 0, 0, 0, [System.UIntPtr]::Zero)
+    [Win.Mouse]::mouse_event(4, 0, 0, 0, [System.UIntPtr]::Zero)
+    Start-Sleep -Milliseconds 500
+}
+
 function Shot($name) {
     $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
     $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
@@ -38,16 +50,19 @@ $shell = New-Object -ComObject WScript.Shell
 $null = $shell.AppActivate($proc.Id)
 Start-Sleep -Seconds 2
 Shot 'main'
-[System.Windows.Forms.SendKeys]::SendWait('%')
-Start-Sleep -Milliseconds 500
-[System.Windows.Forms.SendKeys]::SendWait('v')
-Start-Sleep -Milliseconds 800
-Shot 'viewmenu'
-[System.Windows.Forms.SendKeys]::SendWait('e')
-Start-Sleep -Seconds 2
-[System.Windows.Forms.SendKeys]::SendWait('{DOWN 9}')
+Click 760 156
+[System.Windows.Forms.SendKeys]::SendWait('Total{ENTER}')
 Start-Sleep -Seconds 3
-Shot 'expanded'
+Click 120 202
+[System.Windows.Forms.SendKeys]::SendWait('{DOWN 5}')
+Start-Sleep -Seconds 3
+Shot 'measure'
+Click 700 330
+[System.Windows.Forms.SendKeys]::SendWait('{END} {+} SU')
+Start-Sleep -Seconds 3
+Shot 'autocomplete'
+[System.Windows.Forms.SendKeys]::SendWait('{ESC}')
+Start-Sleep -Seconds 1
 [System.Windows.Forms.SendKeys]::SendWait('^+d')
 Start-Sleep -Seconds 5
 Shot 'diagram'
