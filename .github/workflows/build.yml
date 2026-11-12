@@ -15,15 +15,18 @@ jobs:
       - uses: NuGet/setup-nuget@v2
 
       - name: Restore packages
-        run: |
-          nuget restore TabularEditor.sln
-          Get-ChildItem packages\Microsoft.AnalysisServices.AdomdClient* -Recurse -Filter *.dll | Select-Object -ExpandProperty FullName
+        run: nuget restore TabularEditor.sln
 
       - name: Generate DAX lexer
         run: msbuild AntlrGrammars\AntlrGrammars.csproj /p:Configuration=Debug /p:Platform=AnyCPU /v:minimal
 
       - name: Build
         run: msbuild TabularEditor\TabularEditor.csproj /p:Configuration=Release /p:Platform=AnyCPU /m /v:minimal
+
+      - name: Smoke test
+        shell: powershell
+        continue-on-error: true
+        run: .\ci\smoke.ps1
 
       - name: Collect portable build
         shell: pwsh
