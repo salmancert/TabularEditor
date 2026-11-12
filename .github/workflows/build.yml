@@ -17,6 +17,9 @@ jobs:
       - name: Restore packages
         run: nuget restore TabularEditor.sln
 
+      - name: Generate DAX lexer
+        run: msbuild AntlrGrammars\AntlrGrammars.csproj /p:Configuration=Debug /p:Platform=AnyCPU /v:minimal
+
       - name: Build
         run: msbuild TabularEditor\TabularEditor.csproj /p:Configuration=Release /p:Platform=AnyCPU /m /v:minimal
 
