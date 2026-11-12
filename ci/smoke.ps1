@@ -16,11 +16,15 @@ New-Item -ItemType Directory -Force $prefDir | Out-Null
 
 Add-Type -Namespace Win -Name Mouse -MemberDefinition @"
 [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
+[DllImport("user32.dll")] public static extern System.IntPtr GetForegroundWindow();
 [DllImport("user32.dll")] public static extern void mouse_event(uint flags, uint dx, uint dy, uint data, System.UIntPtr extra);
 "@
 function Click($x, $y) {
-    [Win.Mouse]::SetCursorPos($x, $y) | Out-Null
-    Start-Sleep -Milliseconds 200
+    $ok = [Win.Mouse]::SetCursorPos($x, $y)
+    $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+    [Win.Mouse]::mouse_event(0x8001, [uint32]($x * 65535 / $b.Width), [uint32]($y * 65535 / $b.Height), 0, [System.UIntPtr]::Zero)
+    Start-Sleep -Milliseconds 300
+    Write-Host "Click $x $y setpos=$ok cursor=$([System.Windows.Forms.Cursor]::Position) focus=$([Win.Mouse]::GetForegroundWindow())"
     [Win.Mouse]::mouse_event(2, 0, 0, 0, [System.UIntPtr]::Zero)
     Start-Sleep -Milliseconds 120
     [Win.Mouse]::mouse_event(4, 0, 0, 0, [System.UIntPtr]::Zero)
@@ -51,6 +55,7 @@ $shell = New-Object -ComObject WScript.Shell
 $null = $shell.AppActivate($proc.Id)
 Start-Sleep -Seconds 2
 Shot 'main'
+Write-Host "main window handle: $($proc.MainWindowHandle)"
 Click 760 156
 [System.Windows.Forms.SendKeys]::SendWait('Total{ENTER}')
 Start-Sleep -Seconds 3
