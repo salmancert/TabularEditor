@@ -56,13 +56,12 @@ $null = $shell.AppActivate($proc.Id)
 Start-Sleep -Seconds 2
 Shot 'main'
 Write-Host "main window handle: $($proc.MainWindowHandle)"
-Click 760 156
-[System.Windows.Forms.SendKeys]::SendWait('Total{ENTER}')
-Start-Sleep -Seconds 3
-Click 130 234
-Start-Sleep -Seconds 1
-Click 130 250
-Start-Sleep -Seconds 3
+Click 82 284
+[System.Windows.Forms.SendKeys]::SendWait('{RIGHT}{DOWN}{RIGHT}')
+Start-Sleep -Seconds 2
+Shot 'tree'
+[System.Windows.Forms.SendKeys]::SendWait('{DOWN 3}')
+Start-Sleep -Seconds 2
 Shot 'measure'
 Click 700 330
 [System.Windows.Forms.SendKeys]::SendWait('{END} {+} SU')
