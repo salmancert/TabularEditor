@@ -75,6 +75,7 @@ namespace TabularEditor.Modern
             {
                 split.SplitterDistance = Math.Max(100, split.Height / 3);
                 Highlight();
+                editor.GoEnd();
                 editor.Focus();
                 if (runImmediately) Run();
             };

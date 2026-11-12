@@ -26,8 +26,8 @@ namespace TabularEditor.Modern
         private readonly ToolStripStatusLabel status = new ToolStripStatusLabel("Ready") { Spring = true, TextAlign = ContentAlignment.MiddleLeft };
         private readonly ToolStripButton btnRun = new ToolStripButton("Analyze");
         private readonly ToolStripButton btnBlankOnly = new ToolStripButton("Blank columns only") { CheckOnClick = true };
-        private readonly ToolStripComboBox cmbTable = new ToolStripComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 220 };
-        private readonly ToolStripComboBox cmbSort = new ToolStripComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 200 };
+        private readonly ToolStripComboBox cmbTable = new ToolStripComboBox { DropDownStyle = ComboBoxStyle.DropDownList, AutoSize = false, Width = 220 };
+        private readonly ToolStripComboBox cmbSort = new ToolStripComboBox { DropDownStyle = ComboBoxStyle.DropDownList, AutoSize = false, Width = 250 };
         private DataTable results;
         private bool running, cancel;
 
@@ -39,7 +39,7 @@ namespace TabularEditor.Modern
             Text = "Table Analyzer";
             Icon = FormMain.Singleton?.Icon;
             StartPosition = FormStartPosition.CenterParent;
-            Size = new Size(1050, 700);
+            Size = new Size(1000, 640);
 
             var model = UIController.Current?.Handler?.Model;
             cmbTable.Items.Add(AllTables);
