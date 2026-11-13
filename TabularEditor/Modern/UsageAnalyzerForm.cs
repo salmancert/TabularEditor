@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using TabularEditor.TOMWrapper;
 using TabularEditor.UI;
 using TabularEditor.UIServices;
+using DataColumn = TabularEditor.TOMWrapper.DataColumn;
 
 namespace TabularEditor.Modern
 {
