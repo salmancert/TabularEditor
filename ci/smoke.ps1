@@ -17,7 +17,7 @@ $q1 = "let`n    Source = Sql.Database(`"srv`", `"db`"),`n    #`"Changed Type`" =
 Write-Host "M-TEST-1:"; Write-Host ($append.Invoke($null, @($q1, 'Removed unused columns', 'Table.RemoveColumns(@PREV, {"a", "b"}, MissingField.Ignore)')))
 $q2 = "Sql.Database(`"srv`", `"db`"){[Schema=`"dbo`",Item=`"T`"]}[Data] // comment"
 Write-Host "M-TEST-2:"; Write-Host ($append.Invoke($null, @($q2, 'Removed unused columns', 'Table.RemoveColumns(@PREV, {"a"}, MissingField.Ignore)')))
-$tmp = Join-Path $env:TEMP 'mk-test.Report'
+[string]$tmp = Join-Path $env:TEMP 'mk-test.Report'
 New-Item -ItemType Directory -Force "$tmp\definition\pages\p1\visuals\v1" | Out-Null
 $legacy = @{ sections = @(@{
   filters = '[{"expression":{"Column":{"Expression":{"SourceRef":{"Entity":"Date"}},"Property":"Year"}}}]'
@@ -26,7 +26,7 @@ $legacy = @{ sections = @(@{
 Set-Content "$tmp\report.json" $legacy -Encoding UTF8
 '{"visual":{"query":{"queryState":{"Values":{"projections":[{"field":{"Measure":{"Expression":{"SourceRef":{"Entity":"Sales"}},"Property":"Margin"}},"queryRef":"Sales.Margin"}]}}}}}' | Set-Content "$tmp\definition\pages\p1\visuals\v1\visual.json" -Encoding UTF8
 $scanner = [Activator]::CreateInstance($asm.GetType('TabularEditor.Modern.ReportScanner'), $true)
-$scanner.GetType().GetMethod('Scan', $flags).Invoke($scanner, @($tmp)) | Out-Null
+$scanner.GetType().GetMethod('Scan', $flags).Invoke($scanner, [object[]]@([string]$tmp)) | Out-Null
 $fields = $scanner.GetType().GetField('Fields', $flags).GetValue($scanner)
 $levels = $scanner.GetType().GetField('Levels', $flags).GetValue($scanner)
 Write-Host ("SCAN-TEST fields: " + (($fields | ForEach-Object { $_ -replace "`n", '|' } | Sort-Object) -join ', '))
