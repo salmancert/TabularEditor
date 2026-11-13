@@ -301,6 +301,12 @@
     <Compile Include="Modern\DiagramForm.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Modern\ReportScanner.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Modern\UsageAnalyzerForm.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Modern\ModernFeatures.cs">
       <SubType>Code</SubType>
     </Compile>

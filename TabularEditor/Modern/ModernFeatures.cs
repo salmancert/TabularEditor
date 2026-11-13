@@ -29,6 +29,10 @@ namespace TabularEditor.Modern
                 if (AdomdHelper.EnsureConnected(owner))
                     new DaxQueryForm("EVALUATE\n    TOPN(1000, " + table.DaxObjectFullName + ")", true).Show(owner);
             });
+            Add(toolsMenu, "Usage analyzer (unused measures and columns)", Keys.Control | Keys.Shift | Keys.K, () =>
+            {
+                if (HasModel(owner)) new UsageAnalyzerForm().Show(owner);
+            });
             Add(toolsMenu, "Table analyzer (blank columns)", Keys.Control | Keys.Shift | Keys.B, () =>
             {
                 if (!HasModel(owner)) return;

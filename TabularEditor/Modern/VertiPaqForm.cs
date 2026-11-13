@@ -130,7 +130,7 @@ namespace TabularEditor.Modern
             public long Total => Data + Dictionary + Hierarchy;
         }
 
-        private static Tuple<DataTable, DataTable> Analyze()
+        internal static Tuple<DataTable, DataTable> Analyze()
         {
             var storageTables = AdomdHelper.Query("SELECT DIMENSION_NAME, TABLE_ID, ROWS_COUNT FROM $SYSTEM.DISCOVER_STORAGE_TABLES");
             var storageColumns = AdomdHelper.Query("SELECT DIMENSION_NAME, COLUMN_ID, ATTRIBUTE_NAME, DICTIONARY_SIZE, COLUMN_TYPE FROM $SYSTEM.DISCOVER_STORAGE_TABLE_COLUMNS");
